@@ -1,0 +1,23 @@
+@startuml 全体シーケンス図
+
+title 全体シーケンス図
+
+participant クライアントアプリ as client
+participant Token処理サーバ as nodeApp #PHYSICAL
+participant Livekitサーバ as livekitApp #PHYSICAL
+
+autonumber
+
+' Tokenの取得
+client -> nodeApp : Token取得依頼
+nodeApp -> livekitApp : Token生成依頼
+note over livekitApp
+Token生成
+end note
+livekitApp -> nodeApp : Token返却
+nodeApp -> client : Token取得
+
+' ルームに接続
+client -> livekitApp : 接続
+
+@enduml
