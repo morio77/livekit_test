@@ -24,6 +24,13 @@ theme: default
   - Ubuntu22.04 LTS (さくらのVPS様)
 
 ---
+# 大まかな手順
+
+- サーバの構築1(Livekitサーバ)
+- サーバの構築2(Token処理サーバ)
+- クライアントアプリの作成(Flutterアプリ)
+
+---
 # サーバの構築(Linux Server)
 
 - dockerを使えるようにする
@@ -96,6 +103,68 @@ sudo docker run --rm -e LIVEKIT_KEYS="<api-key>: <api-secret>" \
     livekit/livekit-server create-join-token \
     --room "<room-name>" \
     --identity "<participant-identity>"
+```
+
+---
+# サーバの構築2-1(Token処理サーバ)
+
+nodejsの実行環境と`livekit-server-sdk`のインストール
+
+```bash
+# node.jsとnpmをインストール
+sudo apt-get install nodejs npm livekit-server-sdk
+
+# node.jsを最新にするためのnコマンドのインストール
+sudo npm install n -g
+
+ # nコマンドでnodejs, npmのLTS版をインストールする
+sudo n lts
+
+# バージョン確認
+node -v
+v16.15.1
+
+# livekit-server-sdkをインストール
+sudo npm install livekit-server-sdk --save
+```
+
+---
+# サーバの構築2-2(Token処理サーバ)
+
+```bash
+# Token処理サーバを作るディレクトリを作成
+sudo mkdir /srv/token-server
+
+# 移動して、nodeプロジェクトを作成
+cd /srv/token-server
+sudo npm init -y
+
+#livekitSDK、express(webアプリ作成フレームワーク)をインストール
+sudo npm install livekit-server-sdk --save
+sudo npm install express
+```
+
+---
+# サーバの構築2-3(Token処理サーバ)
+
+クライアントからのリクエストを受け、livekit-server-sdkを使い、  
+Tokenを生成しクライアントに返却するサーバを作成する。
+
+`sudo touch app.js`
+
+```javascript
+import { AccessToken } from 'livekit-server-sdk';
+
+const roomName = 'name-of-room';
+const participantName = 'user-name';
+
+const at = new AccessToken('api-key', 'secret-key', {
+  identity: participantName,
+});
+at.addGrant({ roomJoin: true, room: roomName, canPublish: true, canSubscribe: true });
+
+const token = at.toJwt();
+console.log('access token', token);
 ```
 
 ---
