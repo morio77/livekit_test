@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:livekit_test/token_server_gateway.dart';
+import 'package:livekit_test/http_clients/livekit_server_gateway.dart';
+import 'package:livekit_test/room_page.dart';
+import 'http_clients/token_server_gateway.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -109,6 +111,12 @@ class _HomePageState extends State<HomePage> {
           });
 
           var token = await TokenServerGateway.generateToken();
+          var room = await LKServerGateway.connect(token);
+
+          if (!mounted) return;
+          Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+            return RoomPage(room);
+          })));
         } catch (e) {
           return;
         } finally {
