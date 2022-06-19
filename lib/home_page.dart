@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:livekit_test/http_client.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -8,8 +9,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String userName = "";
-  String roomName = "";
+  TextEditingController userNameController = TextEditingController();
+  String roomName = 'ルーム1';
   bool isEnteringRoom = false;
 
   @override
@@ -39,26 +40,52 @@ class _HomePageState extends State<HomePage> {
   Widget _blackContainer() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Container(
-        color: Colors.black38,
-        width: 100,
-        height: 100,
+      child: Hero(
+        tag: 'videoContainer',
+        child: Container(
+          color: Colors.black38,
+          width: 100,
+          height: 100,
+        ),
       ),
     );
   }
 
   Widget _userNameTextField() {
-    return TextField();
+    return TextField(
+      controller: userNameController,
+    );
   }
 
   Widget _roomSelectionDropdownButton() {
-    return TextField();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: DropdownButton<String>(
+        value: roomName,
+        items: const [
+          DropdownMenuItem(value: 'ルーム1', child: Text('ルーム1')),
+          DropdownMenuItem(value: 'ルーム2', child: Text('ルーム2')),
+          DropdownMenuItem(value: 'ルーム3', child: Text('ルーム3')),
+        ],
+        onChanged: (String? value) {
+          setState(() {
+            roomName = value ?? roomName;
+          });
+        },
+      ),
+    );
   }
 
   Widget _enterRoomButton() {
-    return const ElevatedButton(
-      onPressed: null,
-      child: Text('入室する'),
+    return ElevatedButton(
+      onPressed: () async {
+        try {
+          var token = await TokenServerGateWay.generateToken();
+        } catch (e) {
+          return;
+        }
+      },
+      child: const Text('入室する'),
     );
   }
 }
