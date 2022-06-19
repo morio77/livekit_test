@@ -72,9 +72,9 @@ class _HomePageState extends State<HomePage> {
       child: TextField(
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
           labelText: 'ユーザ名',
           prefixIcon: Icon(Icons.face),
-          // suffixIcon: Icon(Icons.face_outlined),
         ),
         controller: userNameController,
       ),
