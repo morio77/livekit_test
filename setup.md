@@ -105,7 +105,7 @@ sudo docker run -d --rm -p 7880:7880 \
 
 ```bash
 # node.jsとnpmをインストール
-sudo apt-get install nodejs npm livekit-server-sdk
+sudo apt-get install nodejs npm
 
 # node.jsを最新にするためのnコマンドのインストール
 sudo npm install n -g
